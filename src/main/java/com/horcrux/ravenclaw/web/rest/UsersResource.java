@@ -3,6 +3,7 @@ package com.horcrux.ravenclaw.web.rest;
 import com.horcrux.ravenclaw.service.UsersService;
 import com.horcrux.ravenclaw.service.dto.UsersRequest;
 import com.horcrux.ravenclaw.service.dto.UsersResponse;
+import com.horcrux.ravenclaw.service.dto.UsersResponseError;
 import io.micrometer.core.annotation.Timed;
 import javassist.NotFoundException;
 import org.apache.tomcat.util.http.ResponseUtil;
@@ -30,11 +31,18 @@ public class UsersResource {
 
     @PostMapping("/security/authenticate")
     @Timed
-    public ResponseEntity<UsersResponse> authenticateUser(@RequestBody UsersRequest usersRequest) throws URISyntaxException, NotFoundException {
+    public ResponseEntity<?> authenticateUser(@RequestBody UsersRequest usersRequest) throws URISyntaxException, NotFoundException {
         log.debug("REST request to authenticate user : {}", usersRequest);
 
         UsersResponse result = usersService.authenticateUser(usersRequest);
+        UsersResponseError resultError = new UsersResponseError();
         log.debug("response:{}", result);
+
+        if (result.getResult().equals("fail")){
+            resultError.setResult("fail");
+            resultError.setErrorMessage("invalid password or user id");
+            return ResponseEntity.ok().body(resultError);
+        }
 
         return ResponseEntity.ok().body(result);
     }

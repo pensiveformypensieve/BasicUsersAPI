@@ -47,6 +47,8 @@ public class UsersServiceImpl implements UsersService {
             }
             else{
                 log.debug("userId or password does not match");
+                response.setResult("fail");
+                return response;
             }
         }
 
@@ -54,7 +56,6 @@ public class UsersServiceImpl implements UsersService {
             log.debug("user not found");
             UsersResponse errorResponse = new UsersResponse();
             response.setResult("fail");
-            response.setErrorMessage("invalid password or user id");
             return errorResponse;
         }
 

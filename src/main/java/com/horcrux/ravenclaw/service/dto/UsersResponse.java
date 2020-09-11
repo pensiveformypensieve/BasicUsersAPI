@@ -9,7 +9,7 @@ public class UsersResponse implements Serializable {
 
     String result;
     List<String> roles;
-    String errorMessage;
+//    String errorMessage;
 
     public UsersResponse(){}
 
@@ -29,20 +29,20 @@ public class UsersResponse implements Serializable {
         this.roles = roles;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
+//    public String getErrorMessage() {
+//        return errorMessage;
+//    }
+//
+//    public void setErrorMessage(String errorMessage) {
+//        this.errorMessage = errorMessage;
+//    }
 
     @Override
     public String toString() {
         return "UsersResponse{" +
                 "result=" + getResult() +
                 "roles=" + getRoles() +
-                "errorMessage=" + getErrorMessage() +
+//                "errorMessage=" + getErrorMessage() +
                 "}";
     }
 }
