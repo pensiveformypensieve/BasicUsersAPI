@@ -10,6 +10,9 @@ import javax.persistence.*;
 public class Users {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+
     @Column(name = "userId", nullable = false)
     private String userId;
 
@@ -18,6 +21,14 @@ public class Users {
 
     @Column(name = "active", nullable = false)
     private String activeStatus;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getUserId() {
         return userId;

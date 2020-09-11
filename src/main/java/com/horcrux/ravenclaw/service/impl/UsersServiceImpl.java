@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class UsersServiceImpl implements UsersService {
@@ -35,13 +37,16 @@ public class UsersServiceImpl implements UsersService {
         UsersResponse response = new UsersResponse();
 
         try {
-            Users user = usersRepository.findFirstByUserId(userId);
+            log.debug("usersRequest:{}", usersRequest);
+            log.debug("userId:{}", userId);
+            Users user = usersRepository.getUserByUserId(userId);
+            log.debug("user:{}",user);
             if(user!=null && user.getPassword().equals(password)) {
                 response.setRoles(rolesRepository.findRolesByUserId(userId));
                 response.setResult("success");
             }
             else{
-                log.debug("password does not match");
+                log.debug("userId or password does not match");
             }
         }
 
