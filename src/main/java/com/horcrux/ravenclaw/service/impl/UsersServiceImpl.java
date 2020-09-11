@@ -1,4 +1,60 @@
 package com.horcrux.ravenclaw.service.impl;
 
-public class UsersServiceImpl {
+import com.horcrux.ravenclaw.domain.Users;
+import com.horcrux.ravenclaw.repository.RolesRepository;
+import com.horcrux.ravenclaw.repository.UsersRepository;
+import com.horcrux.ravenclaw.service.UsersService;
+import com.horcrux.ravenclaw.service.dto.UsersRequest;
+import com.horcrux.ravenclaw.service.dto.UsersResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Service
+@Transactional
+public class UsersServiceImpl implements UsersService {
+
+    final static Logger log = LoggerFactory.getLogger(UsersServiceImpl.class.getName());
+
+    @Autowired
+    private final UsersRepository usersRepository;
+    @Autowired
+    private final RolesRepository rolesRepository;
+
+    public UsersServiceImpl(UsersRepository usersRepository, RolesRepository rolesRepository) {
+        this.usersRepository = usersRepository;
+        this.rolesRepository = rolesRepository;
+    }
+
+    public UsersResponse authenticateUser(UsersRequest usersRequest){
+
+        String userId = usersRequest.getUserId();
+        String password = usersRequest.getPassword();
+        UsersResponse response = new UsersResponse();
+
+        try {
+            Users user = usersRepository.findFirstByUserId(userId);
+            if(user!=null && user.getPassword().equals(password)) {
+                response.setRoles(rolesRepository.findRolesByUserId(userId));
+                response.setResult("success");
+            }
+            else{
+                log.debug("password does not match");
+            }
+        }
+
+        catch(Exception ex){
+            log.debug("user not found");
+            UsersResponse errorResponse = new UsersResponse();
+            response.setResult("fail");
+            response.setErrorMessage("invalid password or user id");
+            return errorResponse;
+        }
+
+        return response;
+    }
+
+
 }
