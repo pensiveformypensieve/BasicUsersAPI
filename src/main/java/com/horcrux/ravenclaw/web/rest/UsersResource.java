@@ -4,16 +4,15 @@ import com.horcrux.ravenclaw.service.UsersService;
 import com.horcrux.ravenclaw.service.dto.UsersRequest;
 import com.horcrux.ravenclaw.service.dto.UsersResponse;
 import com.horcrux.ravenclaw.service.dto.UsersResponseError;
+import com.horcrux.ravenclaw.service.dto.UsersStatusResponse;
 import io.micrometer.core.annotation.Timed;
 import javassist.NotFoundException;
 import org.apache.tomcat.util.http.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
 import java.util.Optional;
@@ -43,6 +42,16 @@ public class UsersResource {
             resultError.setErrorMessage("invalid password or user id");
             return ResponseEntity.ok().body(resultError);
         }
+
+        return ResponseEntity.ok().body(result);
+    }
+
+
+    @GetMapping("/security/userState")
+    public ResponseEntity<UsersStatusResponse> userStatusCheck(@RequestParam(value="userId") String userId)
+            throws ResourceNotFoundException {
+
+        UsersStatusResponse result = usersService.userStatusCheck(userId);
 
         return ResponseEntity.ok().body(result);
     }

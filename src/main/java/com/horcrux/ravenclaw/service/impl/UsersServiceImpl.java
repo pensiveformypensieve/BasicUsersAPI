@@ -6,11 +6,14 @@ import com.horcrux.ravenclaw.repository.UsersRepository;
 import com.horcrux.ravenclaw.service.UsersService;
 import com.horcrux.ravenclaw.service.dto.UsersRequest;
 import com.horcrux.ravenclaw.service.dto.UsersResponse;
+import com.horcrux.ravenclaw.service.dto.UsersStatusResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Service
 @Transactional
@@ -60,6 +63,37 @@ public class UsersServiceImpl implements UsersService {
 
         return response;
     }
+
+
+    public UsersStatusResponse userStatusCheck(String userId){
+
+        UsersStatusResponse response = new UsersStatusResponse();
+
+        try {
+            log.debug("userId:{}", userId);
+            Users user = usersRepository.findByUserId(userId);
+            log.debug("user:{}",user);
+                if("true".equals(user.getActiveStatus())) {
+                    log.debug("finding status");
+                    response.setStatus("true");
+                }
+            else{
+                log.debug("inactive user");
+                response.setStatus("false");
+                return response;
+            }
+        }
+
+        catch(Exception ex){
+            log.debug("user not found");
+            UsersStatusResponse errorResponse = new UsersStatusResponse();
+            response.setStatus("error");
+            return errorResponse;
+        }
+
+        return response;
+    }
+
 
 
 }
