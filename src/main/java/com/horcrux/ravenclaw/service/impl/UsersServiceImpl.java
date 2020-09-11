@@ -6,13 +6,11 @@ import com.horcrux.ravenclaw.repository.UsersRepository;
 import com.horcrux.ravenclaw.service.UsersService;
 import com.horcrux.ravenclaw.service.dto.UsersRequest;
 import com.horcrux.ravenclaw.service.dto.UsersResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -39,10 +37,11 @@ public class UsersServiceImpl implements UsersService {
         try {
             log.debug("usersRequest:{}", usersRequest);
             log.debug("userId:{}", userId);
-            Users user = usersRepository.getUserByUserId(userId);
+            Users user = usersRepository.findByUserId(userId);
             log.debug("user:{}",user);
-            if(user!=null && user.getPassword().equals(password)) {
-                response.setRoles(rolesRepository.findRolesByUserId(userId));
+            if(user!=null && password.equals(user.getPassword())) {
+                log.debug("finding roles");
+                response.setRoles(rolesRepository.getRolesByUserId(userId));
                 response.setResult("success");
             }
             else{
@@ -55,7 +54,7 @@ public class UsersServiceImpl implements UsersService {
         catch(Exception ex){
             log.debug("user not found");
             UsersResponse errorResponse = new UsersResponse();
-            response.setResult("fail");
+            errorResponse.setResult("fail");
             return errorResponse;
         }
 

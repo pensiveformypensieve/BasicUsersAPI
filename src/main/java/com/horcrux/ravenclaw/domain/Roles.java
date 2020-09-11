@@ -20,6 +20,8 @@ public class Roles {
     @Column(name = "role", nullable = false)
     private String role;
 
+    public Roles() {}
+
     public long getId() {
         return id;
     }
@@ -42,5 +44,13 @@ public class Roles {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        return "Roles{" +
+                "userId=" + getUserId() +
+                "roles=" + getRole() +
+                "}";
     }
 }

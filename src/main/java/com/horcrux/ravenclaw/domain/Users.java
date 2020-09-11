@@ -22,6 +22,8 @@ public class Users {
     @Column(name = "active", nullable = false)
     private String activeStatus;
 
+    public Users() {}
+
     public Integer getId() {
         return id;
     }
@@ -52,5 +54,13 @@ public class Users {
 
     public void setActiveStatus(String activeStatus) {
         this.activeStatus = activeStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "Users{" +
+                "userId=" + getUserId() +
+                "activeStatus=" + getActiveStatus() +
+                "}";
     }
 }
