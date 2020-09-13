@@ -1,10 +1,7 @@
 package com.horcrux.ravenclaw.web.rest;
 
 import com.horcrux.ravenclaw.service.UsersService;
-import com.horcrux.ravenclaw.service.dto.UsersRequest;
-import com.horcrux.ravenclaw.service.dto.UsersResponse;
-import com.horcrux.ravenclaw.service.dto.UsersResponseError;
-import com.horcrux.ravenclaw.service.dto.UsersStatusResponse;
+import com.horcrux.ravenclaw.service.dto.*;
 import io.micrometer.core.annotation.Timed;
 import javassist.NotFoundException;
 import org.apache.tomcat.util.http.ResponseUtil;
@@ -52,6 +49,24 @@ public class UsersResource {
             throws ResourceNotFoundException {
 
         UsersStatusResponse result = usersService.userStatusCheck(userId);
+
+        return ResponseEntity.ok().body(result);
+    }
+
+
+    @GetMapping("/security/deactivate")
+    public ResponseEntity<?> deactivateUser(@RequestParam(value="userId") String userId)
+            throws ResourceNotFoundException {
+
+        UsersDeactivateResponse result = usersService.deactivateUser(userId);
+        UsersResponseError resultError = new UsersResponseError();
+        log.debug("response:{}", result);
+
+        if (result.getResult().equals("fail")){
+            resultError.setResult("fail");
+            resultError.setErrorMessage("invalid user");
+            return ResponseEntity.ok().body(resultError);
+        }
 
         return ResponseEntity.ok().body(result);
     }

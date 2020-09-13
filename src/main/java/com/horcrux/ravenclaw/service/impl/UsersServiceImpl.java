@@ -4,9 +4,7 @@ import com.horcrux.ravenclaw.domain.Users;
 import com.horcrux.ravenclaw.repository.RolesRepository;
 import com.horcrux.ravenclaw.repository.UsersRepository;
 import com.horcrux.ravenclaw.service.UsersService;
-import com.horcrux.ravenclaw.service.dto.UsersRequest;
-import com.horcrux.ravenclaw.service.dto.UsersResponse;
-import com.horcrux.ravenclaw.service.dto.UsersStatusResponse;
+import com.horcrux.ravenclaw.service.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +92,27 @@ public class UsersServiceImpl implements UsersService {
         return response;
     }
 
+    public UsersDeactivateResponse deactivateUser(String userId){
 
+        UsersDeactivateResponse response = new UsersDeactivateResponse();
 
+        log.debug("userId:{}", userId);
+        Users user = usersRepository.getUserByUserId(userId);
+        log.debug("checking user's existing status");
+        String userStatus = userStatusCheck(userId).getStatus();
+
+        log.debug("userStatus:{}", userStatus);
+        if ("true".equals(userStatus)){
+            user.setActiveStatus("false");
+            usersRepository.save(user);
+            response.setResult("success");
+        }
+
+        else{
+            UsersDeactivateResponse responseError = new UsersDeactivateResponse();
+            responseError.setResult("fail");
+            return responseError;
+        }
+        return response;
+    }
 }

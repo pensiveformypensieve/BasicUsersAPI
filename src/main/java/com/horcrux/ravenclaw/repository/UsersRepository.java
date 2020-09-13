@@ -17,7 +17,4 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
     Users findByActiveStatus(String activeStatus);
 
     Users findByUserId(String userId);
-
-
-
 }
