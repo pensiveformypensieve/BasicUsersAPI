@@ -20,9 +20,8 @@ public class UsersServiceImpl implements UsersService {
 
     final static Logger log = LoggerFactory.getLogger(UsersServiceImpl.class.getName());
 
-    @Autowired
     private final UsersRepository usersRepository;
-    @Autowired
+
     private final RolesRepository rolesRepository;
 
     public UsersServiceImpl(UsersRepository usersRepository, RolesRepository rolesRepository) {
@@ -40,7 +39,6 @@ public class UsersServiceImpl implements UsersService {
         Boolean isPasswordMatched = false;
 
         try {
-            log.debug("usersRequest:{}", usersRequest);
             log.debug("userId:{}", userId);
             Users user = usersRepository.findByUserId(userId);
             log.debug("user:{}",user);

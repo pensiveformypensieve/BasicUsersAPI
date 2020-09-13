@@ -28,7 +28,7 @@ public class UsersResource {
     @PostMapping("/security/authenticate")
     @Timed
     public ResponseEntity<?> authenticateUser(@RequestBody UsersRequest usersRequest) throws URISyntaxException, NotFoundException {
-        log.debug("REST request to authenticate user : {}", usersRequest);
+        log.debug("REST request to authenticate user:{}", usersRequest.getUserId());
 
         UsersResponse result = usersService.authenticateUser(usersRequest);
         UsersResponseError resultError = new UsersResponseError();
@@ -47,6 +47,7 @@ public class UsersResource {
     @GetMapping("/security/userState")
     public ResponseEntity<UsersStatusResponse> userStatusCheck(@RequestParam(value="userId") String userId)
             throws ResourceNotFoundException {
+        log.debug("REST request to check user status:{}",userId);
 
         UsersStatusResponse result = usersService.userStatusCheck(userId);
 
@@ -57,6 +58,7 @@ public class UsersResource {
     @GetMapping("/security/deactivate")
     public ResponseEntity<?> deactivateUser(@RequestParam(value="userId") String userId)
             throws ResourceNotFoundException {
+        log.debug("REST request to deactivate user:{}",userId);
 
         UsersDeactivateResponse result = usersService.deactivateUser(userId);
         UsersResponseError resultError = new UsersResponseError();
