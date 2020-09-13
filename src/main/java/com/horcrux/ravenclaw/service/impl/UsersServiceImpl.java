@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,14 +34,26 @@ public class UsersServiceImpl implements UsersService {
 
         String userId = usersRequest.getUserId();
         String password = usersRequest.getPassword();
+
         UsersResponse response = new UsersResponse();
+
+        Boolean isPasswordMatched = false;
 
         try {
             log.debug("usersRequest:{}", usersRequest);
             log.debug("userId:{}", userId);
             Users user = usersRepository.findByUserId(userId);
             log.debug("user:{}",user);
-            if(user!=null && password.equals(user.getPassword())) {
+
+            if (user != null) {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+//                log.debug("encodedpassword:{}",encoder.encode(password));
+                String retrievedPassword = user.getPassword();
+                isPasswordMatched = encoder.matches(password,retrievedPassword);
+                log.debug("isPasswordMatched:{}", isPasswordMatched);
+            }
+
+            if(isPasswordMatched == true) {
                 log.debug("finding roles");
                 response.setRoles(rolesRepository.getRolesByUserId(userId));
                 response.setResult("success");
